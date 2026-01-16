@@ -10,6 +10,9 @@ const __dirname = dirname(__filename);
 // Watch mode enabled via command line flag
 const isWatch = process.argv.includes('--watch');
 
+// Development mode (with sourcemaps, no minify)
+const isDevelopment = process.argv.includes('--dev');
+
 /**
  * ESBuild configuration for n8n custom nodes
  * 
@@ -64,8 +67,8 @@ async function build() {
             format: 'cjs',
             outdir: 'dist',
             outbase: '.',
-            sourcemap: true,
-            minify: false,
+            sourcemap: isDevelopment ? true : false,
+            minify: isDevelopment ? false : true,
             external: [
                 ...nodeBuiltins,
                 ...n8nExternals,
@@ -80,7 +83,11 @@ async function build() {
             await context.watch();
             console.log('✅ Watching for changes...');
         } else {
-            console.log('🔨 Building...\n');
+            if (isDevelopment) {
+                console.log('🔨 Building (Development Mode - With Sourcemaps)...\n');
+            } else {
+                console.log('🚀 Building (Production Mode - Minified, No Sourcemaps)...\n');
+            }
             const result = await esbuild.build(buildOptions);
 
             // Display build summary

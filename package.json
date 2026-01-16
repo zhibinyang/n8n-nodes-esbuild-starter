@@ -17,9 +17,8 @@
 	},
 	"scripts": {
 		"build": "node esbuild.config.mjs",
-		"build:n8n": "n8n-node build",
+		"build:dev": "node esbuild.config.mjs --dev",
 		"build:watch": "node esbuild.config.mjs --watch",
-		"dev": "npm run build:watch",
 		"lint": "n8n-node lint",
 		"lint:fix": "n8n-node lint --fix",
 		"release": "n8n-node release",

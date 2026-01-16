@@ -1,247 +1,179 @@
-![Banner image](https://user-images.githubusercontent.com/10284570/173569848-c624317f-42b1-45a6-ab09-f0ea3c247648.png)
+# n8n-nodes-esbuild-starter
 
-# n8n-nodes-starter
+English | [简体中文](./README_CN.md)
 
-This starter repository helps you build custom integrations for [n8n](https://n8n.io). It includes example nodes, credentials, the node linter, and all the tooling you need to get started.
+A production-optimized starter template for building [n8n](https://n8n.io) custom nodes using **esbuild** instead of TypeScript compiler (tsc).
 
-## Quick Start
+> 💡 **Why esbuild?** This starter uses esbuild to dramatically reduce bundle sizes and improve Cloud Run + GCS deployment performance through intelligent bundling and minification.
 
-> [!TIP]
-> **New to building n8n nodes?** The fastest way to get started is with `npm create @n8n/node`. This command scaffolds a complete node package for you using the [@n8n/node-cli](https://www.npmjs.com/package/@n8n/node-cli).
+## ✨ Key Advantages Over Official Starter
 
-**To create a new node package from scratch:**
+This starter template differs from the [official n8n-nodes-starter](https://github.com/n8n-io/n8n-nodes-starter) in several important ways:
 
-```bash
-npm create @n8n/node
-```
+### 🚀 **Production-Optimized Builds**
+- **Dramatically fewer files**: Bundles reduce hundreds/thousands of dependency files to just a few (~99% reduction in file count)
+- **Smaller bundles**: Dependencies are bundled and minified by default (~50-70% size reduction)
+- **Reduced memory footprint**: Single bundled files use significantly less memory than many small files
+- **Faster builds**: ~100x faster than tsc (milliseconds vs seconds)
+- **Production-first**: Minified output by default, development mode opt-in
 
-**Already using this starter? Start developing with:**
+> 💡 **Key Benefit**: When you include npm dependencies like `google-ads-api`, `axios`, etc., traditional builds create hundreds or thousands of files. esbuild bundles everything into single files, dramatically reducing disk I/O and memory usage - critical for Cloud Run and containerized deployments.
 
-```bash
-npm run dev
-```
+### 📦 **Better for Deployment**
+- **Cloud Run + GCS optimized**: Minimal file count for better GCS mounting performance
+- **Self-contained**: All dependencies bundled, no external node_modules at runtime
+- **Smaller npm packages**: Users download compressed bundles instead of source code
 
-This starts n8n with your nodes loaded and hot reload enabled.
+### 🛠️ **Developer Experience**
+- **Fast iteration**: Lightning-fast rebuilds during development
+- **Watch mode**: Instant rebuilds on file changes
+- **Source maps**: Available in development mode for easy debugging
 
-## What's Included
+## 🎯 When to Use This Starter
 
-This starter repository includes two example nodes to learn from:
+**Use this esbuild starter if:**
+- ✅ You need to include external npm dependencies
+- ✅ You're deploying to Cloud Run, GCS, or similar platforms
+- ✅ Bundle size and deployment performance matter
+- ✅ You want faster builds during development
 
-- **[Example Node](nodes/Example/)** - A simple starter node that shows the basic structure with a custom `execute` method
-- **[GitHub Issues Node](nodes/GithubIssues/)** - A complete, production-ready example built using the **declarative style**:
-  - **Low-code approach** - Define operations declaratively without writing request logic
-  - Multiple resources (Issues, Comments)
-  - Multiple operations (Get, Get All, Create)
-  - Two authentication methods (OAuth2 and Personal Access Token)
-  - List search functionality for dynamic dropdowns
-  - Proper error handling and typing
-  - Ideal for HTTP API-based integrations
+**Use the [official starter](https://github.com/n8n-io/n8n-nodes-starter) if:**
+- You're building a node for n8n Cloud (no external dependencies allowed)
+- You prefer the standard TypeScript workflow
+- You want to use the interactive `@n8n/node-cli` scaffolding
 
-> [!TIP]
-> The declarative/low-code style (used in GitHub Issues) is the recommended approach for building nodes that interact with HTTP APIs. It significantly reduces boilerplate code and handles requests automatically.
+## 🚀 Quick Start
 
-Browse these examples to understand both approaches, then modify them or create your own.
+### Create from Template
 
-## Finding Inspiration
+1. **[Generate a new repository](https://github.com/zhibinyang/n8n-nodes-esbuild-starter/generate)** from this template
+2. **Clone your repository**:
+   ```bash
+   git clone https://github.com/<your-username>/<your-repo>.git
+   cd <your-repo>
+   ```
 
-Looking for more examples? Check out these resources:
+3. **Install dependencies**:
+   ```bash
+   npm install
+   ```
 
-- **[npm Community Nodes](https://www.npmjs.com/search?q=keywords:n8n-community-node-package)** - Browse thousands of community-built nodes on npm using the `n8n-community-node-package` tag
-- **[n8n Built-in Nodes](https://github.com/n8n-io/n8n/tree/master/packages/nodes-base/nodes)** - Study the source code of n8n's official nodes for production-ready patterns and best practices
-- **[n8n Credentials](https://github.com/n8n-io/n8n/tree/master/packages/nodes-base/credentials)** - See how authentication is implemented for various services
+4. **Start developing**:
+   ```bash
+   npm run build:watch
+   ```
 
-These are excellent resources to understand how to structure your nodes, handle different API patterns, and implement advanced features.
+## 📋 What's Included
 
-## Prerequisites
+This starter includes two example nodes:
 
-Before you begin, install the following on your development machine:
+- **[Example Node](nodes/Example/)** - Simple starter showing basic structure
+- **[GitHub Issues Node](nodes/GithubIssues/)** - Production-ready example with:
+  - Multiple resources and operations
+  - OAuth2 and API token authentication
+  - Declarative/low-code style (recommended for HTTP APIs)
 
-### Required
+> See the [official n8n documentation](https://docs.n8n.io/integrations/creating-nodes/) for complete node development guides.
 
-- **[Node.js](https://nodejs.org/)** (v22 or higher) and npm
-  - Linux/Mac/WSL: Install via [nvm](https://github.com/nvm-sh/nvm)
-  - Windows: Follow [Microsoft's NodeJS guide](https://learn.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-windows)
-- **[git](https://git-scm.com/downloads)**
+## 🔨 Available Scripts
 
-### Recommended
+| Script | Description |
+|--------|-------------|
+| `npm run build` | **Production build** (default) - Minified, no sourcemaps |
+| `npm run build:dev` | Development build with sourcemaps |
+| `npm run build:watch` | Watch mode for development |
+| `npm run lint` | Check code for errors |
+| `npm run lint:fix` | Auto-fix linting issues |
 
-- Follow n8n's [development environment setup guide](https://docs.n8n.io/integrations/creating-nodes/build/node-development-environment/)
-
-> [!NOTE]
-> The `@n8n/node-cli` is included as a dev dependency and will be installed automatically when you run `npm install`. The CLI includes n8n for local development, so you don't need to install n8n globally.
-
-## Getting Started with this Starter
-
-Follow these steps to create your own n8n community node package:
-
-### 1. Create Your Repository
-
-[Generate a new repository](https://github.com/n8n-io/n8n-nodes-starter/generate) from this template, then clone it:
-
-```bash
-git clone https://github.com/<your-organization>/<your-repo-name>.git
-cd <your-repo-name>
-```
-
-### 2. Install Dependencies
-
-```bash
-npm install
-```
-
-This installs all required dependencies including the `@n8n/node-cli`.
-
-### 3. Explore the Examples
-
-Browse the example nodes in [nodes/](nodes/) and [credentials/](credentials/) to understand the structure:
-
-- Start with [nodes/Example/](nodes/Example/) for a basic node
-- Study [nodes/GithubIssues/](nodes/GithubIssues/) for a real-world implementation
-
-### 4. Build Your Node
-
-Edit the example nodes to fit your use case, or create new node files by copying the structure from [nodes/Example/](nodes/Example/).
-
-> [!TIP]
-> If you want to scaffold a completely new node package, use `npm create @n8n/node` to start fresh with the CLI's interactive generator.
-
-### 5. Configure Your Package
-
-Update `package.json` with your details:
-
-- `name` - Your package name (must start with `n8n-nodes-`)
-- `author` - Your name and email
-- `repository` - Your repository URL
-- `description` - What your node does
-
-Make sure your node is registered in the `n8n.nodes` array.
-
-### 6. Develop and Test Locally
-
-Start n8n with your node loaded:
+### Build Output Comparison
 
 ```bash
-npm run dev
-```
-
-This command runs `n8n-node dev` which:
-
-- Builds your node with watch mode
-- Starts n8n with your node available
-- Automatically rebuilds when you make changes
-- Opens n8n in your browser (usually http://localhost:5678)
-
-You can now test your node in n8n workflows!
-
-> [!NOTE]
-> Learn more about CLI commands in the [@n8n/node-cli documentation](https://www.npmjs.com/package/@n8n/node-cli).
-
-### 7. Lint Your Code
-
-Check for errors:
-
-```bash
-npm run lint
-```
-
-Auto-fix issues when possible:
-
-```bash
-npm run lint:fix
-```
-
-### 8. Build for Production
-
-When ready to publish:
-
-```bash
+# Production build (default)
 npm run build
+# → ~10-30% of original size, ready for deployment
+
+# Development build (with sourcemaps)
+npm run build:dev  
+# → Larger files, easier debugging
 ```
 
-This compiles your TypeScript code to the `dist/` folder.
+## 🛠️ Build System Details
 
-### 9. Prepare for Publishing
+### How It Works
 
-Before publishing:
+This starter uses **esbuild** to:
+1. Bundle each `*.node.ts` and `*.credentials.ts` file as separate entry points
+2. Include all npm dependencies in the bundle (except `n8n-workflow` and `n8n-core`)
+3. Minify and compress for production by default
+4. Copy static assets (`.svg`, `.json`) to output directory
 
-1. **Update documentation**: Replace this README with your node's documentation. Use [README_TEMPLATE.md](README_TEMPLATE.md) as a starting point.
-2. **Update the LICENSE**: Add your details to the [LICENSE](LICENSE.md) file.
-3. **Test thoroughly**: Ensure your node works in different scenarios.
+### Configuration
 
-### 10. Publish to npm
+The build is configured in [`esbuild.config.mjs`](esbuild.config.mjs):
 
-Publish your package to make it available to the n8n community:
+- **External dependencies**: `n8n-workflow`, `n8n-core`, and Node.js built-ins
+- **Bundled dependencies**: Everything else (your npm packages)
+- **Production mode** (default): `minify: true`, `sourcemap: false`
+- **Development mode** (`--dev` flag): `minify: false`, `sourcemap: true`
+
+### Adding Dependencies
 
 ```bash
-npm publish
+npm install your-package
 ```
 
-Learn more about [publishing to npm](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry).
+Dependencies are automatically bundled into your output files. No additional configuration needed!
 
-### 11. Submit for Verification (Optional)
+> ⚠️ **CRITICAL**: Always add your dependencies to `devDependencies`, NOT `dependencies`!
+> 
+> ```json
+> {
+>   "devDependencies": {
+>     "your-package": "^1.0.0"  // ✅ Correct - only needed at build time
+>   },
+>   "dependencies": {
+>     // ❌ Don't put bundled packages here!
+>   }
+> }
+> ```
+> 
+> **Why?** When users install your node via n8n:
+> - Packages in `dependencies` will be installed by npm (~100MB+ of files)
+> - Packages in `devDependencies` will NOT be installed (already bundled in your .js file)
+> - This defeats the purpose of bundling if dependencies are installed at runtime!
 
-Get your node verified for n8n Cloud:
+## 📤 Publishing Your Node
 
-1. Ensure your node meets the [requirements](https://docs.n8n.io/integrations/creating-nodes/deploy/submit-community-nodes/):
-   - Uses MIT license ✅ (included in this starter)
-   - No external package dependencies
-   - Follows n8n's design guidelines
-   - Passes quality and security review
+For detailed publishing instructions, please refer to the [official n8n-nodes-starter documentation](https://github.com/n8n-io/n8n-nodes-starter#readme).
 
-2. Submit through the [n8n Creator Portal](https://creators.n8n.io/nodes)
+**Before publishing, make sure to:**
+1. Build with production mode: `rm -rf dist && npm run build`
+2. Verify no sourcemap files exist: `ls dist/`
+3. Update your `package.json` metadata
 
-**Benefits of verification:**
+## 📚 Learning Resources
 
-- Available directly in n8n Cloud
-- Discoverable in the n8n nodes panel
-- Verified badge for quality assurance
-- Increased visibility in the n8n community
+- **[n8n Node Development](https://docs.n8n.io/integrations/creating-nodes/)** - Official documentation
+- **[n8n Built-in Nodes](https://github.com/n8n-io/n8n/tree/master/packages/nodes-base/nodes)** - Source code examples
+- **[npm Community Nodes](https://www.npmjs.com/search?q=keywords:n8n-community-node-package)** - Browse community packages
+- **[esbuild Documentation](https://esbuild.github.io/)** - Learn about the bundler
 
-## Available Scripts
+## 🤝 Comparison with Official Starter
 
-This starter includes several npm scripts to streamline development:
+| Feature | This Starter (esbuild) | [Official Starter](https://github.com/n8n-io/n8n-nodes-starter) |
+|---------|------------------------|------------------------------------------------------------------|
+| **Build tool** | esbuild | TypeScript compiler (tsc) |
+| **Build speed** | ~100ms | ~seconds |
+| **Bundle size** | Minified by default | Not bundled |
+| **Dependencies** | Bundled into output | In node_modules |
+| **n8n Cloud** | Not compatible (if using deps) | Compatible |
+| **Self-hosted** | Optimized | Standard |
+| **CLI scaffolding** | Manual | Interactive (`npm create @n8n/node`) |
 
-| Script                | Description                                                      |
-| --------------------- | ---------------------------------------------------------------- |
-| `npm run dev`         | Start n8n with your node and watch for changes (runs `n8n-node dev`) |
-| `npm run build`       | Compile TypeScript to JavaScript for production (runs `n8n-node build`) |
-| `npm run build:watch` | Build in watch mode (auto-rebuild on changes)                    |
-| `npm run lint`        | Check your code for errors and style issues (runs `n8n-node lint`) |
-| `npm run lint:fix`    | Automatically fix linting issues when possible (runs `n8n-node lint --fix`) |
-| `npm run release`     | Create a new release (runs `n8n-node release`)                   |
+## 📄 License
 
-> [!TIP]
-> These scripts use the [@n8n/node-cli](https://www.npmjs.com/package/@n8n/node-cli) under the hood. You can also run CLI commands directly, e.g., `npx n8n-node dev`.
+MIT
 
-## Troubleshooting
+---
 
-### My node doesn't appear in n8n
-
-1. Make sure you ran `npm install` to install dependencies
-2. Check that your node is listed in `package.json` under `n8n.nodes`
-3. Restart the dev server with `npm run dev`
-4. Check the console for any error messages
-
-### Linting errors
-
-Run `npm run lint:fix` to automatically fix most common issues. For remaining errors, check the [n8n node development guidelines](https://docs.n8n.io/integrations/creating-nodes/).
-
-### TypeScript errors
-
-Make sure you're using Node.js v22 or higher and have run `npm install` to get all type definitions.
-
-## Resources
-
-- **[n8n Node Documentation](https://docs.n8n.io/integrations/creating-nodes/)** - Complete guide to building nodes
-- **[n8n Community Forum](https://community.n8n.io/)** - Get help and share your nodes
-- **[@n8n/node-cli Documentation](https://www.npmjs.com/package/@n8n/node-cli)** - CLI tool reference
-- **[n8n Creator Portal](https://creators.n8n.io/nodes)** - Submit your node for verification
-- **[Submit Community Nodes Guide](https://docs.n8n.io/integrations/creating-nodes/deploy/submit-community-nodes/)** - Verification requirements and process
-
-## Contributing
-
-Have suggestions for improving this starter? [Open an issue](https://github.com/n8n-io/n8n-nodes-starter/issues) or submit a pull request!
-
-## License
-
-[MIT](https://github.com/n8n-io/n8n-nodes-starter/blob/master/LICENSE.md)
+**Based on** [n8n-nodes-starter](https://github.com/n8n-io/n8n-nodes-starter) | **Optimized with** [esbuild](https://esbuild.github.io/)
